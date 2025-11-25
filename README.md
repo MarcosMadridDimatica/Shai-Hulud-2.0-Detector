@@ -613,7 +613,7 @@ Generate SARIF reports for GitHub Security tab integration:
   with:
     output-format: sarif
 
-- uses: github/codeql-action/upload-sarif@v3
+- uses: github/codeql-action/upload-sarif@v4
   if: always()
   with:
     sarif_file: shai-hulud-results.sarif
@@ -642,7 +642,7 @@ jobs:
           fail-on-critical: false  # Don't fail, just report
 
       - name: Upload to GitHub Security
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: shai-hulud-results.sarif
@@ -842,12 +842,13 @@ Check `compromised-packages.json` for the full list with version information.
 
 ### Malicious Files
 
-If you find these files in your `node_modules`, you may be compromised:
+If you find these files in your project or `node_modules`, you may be compromised:
 
 | File | SHA-1 Hash | Purpose |
 |------|------------|---------|
 | `setup_bun.js` | `d1829b4708126dcc7bea7437c04d1f10eacd4a16` | Downloads Bun runtime |
-| `bun_environment.js` | `d60ec97eea19fffb4809bc35b91033b52490ca11` | Executes malicious payload |
+| `bun_environment.js` | `d60ec97eea19fffb4809bc35b91033b52490ca11` | Executes malicious payload (10MB+ obfuscated) |
+| `actionsSecrets.json` | - | Stolen GitHub Actions secrets |
 | `cloud.json` | - | Stores stolen cloud credentials |
 | `contents.json` | - | Contains exfiltrated data |
 | `environment.json` | - | Holds environment variables |
@@ -855,9 +856,14 @@ If you find these files in your `node_modules`, you may be compromised:
 
 ### Malicious Workflows
 
-Check `.github/workflows/` for:
-- `discussion.yaml` - Injected workflow for remote execution
-- `formatter_*.yml` - Malicious workflow with random suffix
+Check `.github/workflows/` for these suspicious patterns:
+
+| Pattern | Description |
+|---------|-------------|
+| `discussion.yaml` or `discussion.yml` | Injected workflow for remote execution |
+| `formatter_*.yml` | Malicious workflow with random suffix (e.g., `formatter_abc123.yml`) |
+
+These workflows typically use `SHA1HULUD` self-hosted runners to execute malicious code.
 
 ### GitHub Indicators
 
