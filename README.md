@@ -1163,6 +1163,8 @@ A huge thank you to all the community members who have contributed to this proje
 
 Your contributions help protect millions of developers worldwide. 🙏
 
+*This section is automatically updated weekly.*
+
 ---
 
 ## License
