@@ -197,9 +197,12 @@ This significantly reduces false positives by:
 |-------|-------------|
 | **Compromised Packages** | Scans against database of 790+ known compromised packages |
 | **Malicious Scripts** | Detects `setup_bun.js`, `bun_environment.js` in postinstall/preinstall hooks |
+| **SHA256 Hash Matching** | 🆕 Verifies file hashes against known malware signatures from Datadog IOC database |
 | **TruffleHog Activity** | Identifies credential scanning patterns and TruffleHog downloads |
 | **Malicious Runners** | Detects SHA1HULUD GitHub Actions self-hosted runner references |
-| **Secrets Exfiltration** | Finds `actionsSecrets.json` files with stolen credentials |
+| **Runner Installation** | 🆕 Finds `.dev-env/` directories and runner tarballs used by the attack |
+| **Workflow Triggers** | 🆕 Detects `on: discussion` workflow triggers used for command injection backdoors |
+| **Secrets Exfiltration** | Finds `actionsSecrets.json`, `truffleSecrets.json`, `cloud.json`, `environment.json` files |
 | **Shai-Hulud Repos** | Identifies git remotes/repos named "Shai-Hulud" |
 
 ### Medium Risk Detection
@@ -1140,15 +1143,25 @@ node dist/index.js
 
 This project builds on the excellent work of security researchers who identified and analyzed the Shai-Hulud 2.0 attack:
 
-- **[Aikido Security](https://www.aikido.dev)** - Initial detection and detailed analysis
-- **[Wiz.io](https://www.wiz.io)** - Comprehensive threat investigation
-- **[HelixGuard](https://helixguard.ai)** - Malware analysis and IOC identification
+| Organization | GitHub | Contribution |
+|-------------|--------|--------------|
+| **[Wiz](https://www.wiz.io)** | [@wiz-sec](https://github.com/wiz-sec) | Comprehensive threat investigation & aftermath analysis |
+| **[Datadog Security Labs](https://securitylabs.datadoghq.com)** | [@DataDog](https://github.com/DataDog) | SHA256 hash IOCs & detailed malware analysis |
+| **[Aikido Security](https://www.aikido.dev)** | [@AikidoSec](https://github.com/AikidoSec) | Initial detection and package database |
+| **[Postman](https://www.postman.com)** | [@postmanlabs](https://github.com/postmanlabs) | Post-mortem analysis & package response |
+| **[PostHog](https://posthog.com)** | [@PostHog](https://github.com/PostHog) | Attack timeline & incident response |
+| **[HelixGuard](https://helixguard.ai)** | [@helixguard](https://github.com/helixguard) | Malware analysis and IOC identification |
 
 ### Research & Analysis
 
-- [Aikido Security Blog - Shai-Hulud Strikes Again](https://www.aikido.dev/blog/shai-hulud-strikes-again-hitting-zapier-ensdomains)
-- [Wiz.io Blog - Shai-Hulud 2.0 Investigation](https://www.wiz.io/blog/shai-hulud-2-0-ongoing-supply-chain-attack)
-- [HelixGuard Blog - Malicious SHA1HULUD Analysis](https://helixguard.ai/blog/malicious-sha1hulud-2025-11-24)
+- [Wiz.io - Shai-Hulud 2.0 Investigation](https://www.wiz.io/blog/shai-hulud-2-0-ongoing-supply-chain-attack)
+- [Wiz.io - Shai-Hulud 2.0 Aftermath Analysis](https://www.wiz.io/blog/shai-hulud-2-0-aftermath-ongoing-supply-chain-attack)
+- [Datadog Security Labs - npm Worm Analysis](https://securitylabs.datadoghq.com/articles/shai-hulud-2.0-npm-worm/)
+- [Datadog IOC Repository](https://github.com/DataDog/indicators-of-compromise/tree/main/shai-hulud-2.0)
+- [Aikido Security - Shai-Hulud Strikes Again](https://www.aikido.dev/blog/shai-hulud-strikes-again-hitting-zapier-ensdomains)
+- [Postman Engineering - npm Supply Chain Attack](https://blog.postman.com/engineering/shai-hulud-2-0-npm-supply-chain-attack/)
+- [PostHog - Attack Post-Mortem](https://posthog.com/blog/nov-24-shai-hulud-attack-post-mortem)
+- [HelixGuard - Malicious SHA1HULUD Analysis](https://helixguard.ai/blog/malicious-sha1hulud-2025-11-24)
 
 ### Open Source Tools
 
